@@ -1,0 +1,25 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select *
+from survey_log
+where action <> 'show'
+),
+question_count as (
+select question_id, count(question_id) as question_count
+from base_table
+group by question_id
+),
+answer_count as (
+select question_id, count(question_id) as answer_count
+from base_table
+where action = 'answer'
+group by question_id
+),
+answer_rate_table as (
+select a.question_id, a.question_count, (COALESCE(b.answer_count,0)/a.question_count) as answer_rate
+from question_count a left join answer_count b on a.question_id = b.question_id
+)
+select top 1 question_id as survey_log
+from answer_rate_table
+order by answer_rate DESC, question_count DESC

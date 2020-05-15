@@ -1,0 +1,10 @@
+/* Write your T-SQL query statement below */
+
+with vote_count as (
+select candidateid, count(id) as no_of_votes
+from vote
+group by candidateid
+)
+select TOP 1 a.Name as Name
+from candidate a join vote_count b on a.id = b.candidateid
+order by b.no_of_votes DESC

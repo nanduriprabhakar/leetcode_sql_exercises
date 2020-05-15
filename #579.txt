@@ -1,0 +1,16 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+SELECT
+ID, 
+Month, 
+Salary,
+dense_rank() OVER (partition by id order by Month DESC) as ranking,
+lag(salary,1) OVER (partition by id order by Month ASC) AS previous_month,
+lag(salary,2) OVER (partition by id order by Month ASC) AS previous_to_previous_month
+FROM Employee 
+)
+select id, month, (salary+coalesce(previous_month,0)+coalesce(previous_to_previous_month,0)) as salary
+from base_table
+where ranking <> 1
+order by id ASC, month DESC

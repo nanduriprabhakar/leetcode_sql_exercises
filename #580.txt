@@ -1,0 +1,6 @@
+/* Write your T-SQL query statement below */
+
+select b.dept_name, COALESCE(count(distinct(a.student_id)),0) as student_number
+from student a right join department b on a.dept_id = b.dept_id
+group by b.dept_name
+order by 2 DESC, b.dept_name ASC
