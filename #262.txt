@@ -1,0 +1,20 @@
+/* Write your T-SQL query statement below */
+with base_table as (
+select *
+from trips 
+where client_id in (select users_id from users where banned='NO') and driver_id in (select users_id from users where banned='NO')
+and request_at >= '2013-10-01' and request_at <= '2013-10-03'),
+total_trips as (
+select request_at, count(id) as total_requests
+from base_table 
+group by request_at 
+),
+total_trips_cancelled as (
+select request_at, count(id) as total_cancelled
+from base_table
+where status in ('cancelled_by_driver', 'cancelled_by_client')
+group by request_at
+)
+select a.request_at as Day, cast(((COALESCE(b.total_cancelled,0)*1.00)/a.total_requests) as decimal(10,2)) as "Cancellation Rate"
+from total_trips a left join total_trips_cancelled b on a.request_at = b.request_at
+order by 1 ASC

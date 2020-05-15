@@ -1,0 +1,11 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select a.id, a.num, b.num as num_next, c.num as num_next_2
+from Logs a 
+left join Logs b on a.id = b.id - 1
+left join Logs c on a.id = c.id - 2
+)
+select distinct(num) as ConsecutiveNums
+from base_table
+where num = num_next and num_next = num_next_2

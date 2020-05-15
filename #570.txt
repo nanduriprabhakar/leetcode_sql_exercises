@@ -1,0 +1,10 @@
+/* Write your T-SQL query statement below */
+
+with manager_table as (
+select managerid, count(managerid) as no_of_emp
+from employee
+group by managerid
+)
+select b.name
+from manager_table a join employee b on a.managerid = b.id
+where a.no_of_emp >= 5 

@@ -1,0 +1,9 @@
+/* Write your T-SQL query statement below */
+
+select a.player_id, a.event_date as first_login
+from (
+select *, row_number() over (partition by player_id order by event_date ASC) as rank
+from activity
+) as a
+where a.rank = 1
+order by a.player_id ASC

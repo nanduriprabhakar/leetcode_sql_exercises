@@ -1,0 +1,25 @@
+/* Write your T-SQL query statement below */
+
+with a as (
+select * from (
+select *, dense_rank() over (partition by player_id order by event_date ASC) as rank
+from activity 
+) as spoof
+where spoof.rank = 1
+),
+b as (
+select * from (
+select *, dense_rank() over (partition by player_id order by event_date ASC) as rank
+from activity 
+) as spoof_2
+where spoof_2.rank = 2
+)
+
+select ROUND((COUNT(DISTINCT(CASE WHEN base_table.valid_player_id is NOT NULL THEN base_table.valid_player_id ELSE NULL END))*1.00)/
+COUNT(DISTINCT(base_table.player_id)),2) as fraction
+from (
+select a.*, b.player_id as valid_player_id
+from a
+left join b on DATEADD(day,1,a.event_date) = b.event_date and a.player_id = b.player_id
+-- order by a.player_id ASC
+) base_table

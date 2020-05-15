@@ -1,0 +1,17 @@
+/* Write your T-SQL query statement below */
+with ref_table_1 as (
+select *, row_number() over (partition by company order by salary ASC) as ranking,
+    count(id) over (partition by company) as total_rows
+from employee
+),
+ref_table_2 as (
+select *,
+       case when (total_rows%2 = 0 and ranking = total_rows/2) then 1
+            when (total_rows%2 = 0 and ranking = (total_rows/2 + 1)) then 1
+            when (total_rows%2 <> 0 and ranking = (total_rows/2 + 1)) then 1
+            else 0 end as median_flag
+from ref_table_1
+)
+select id, company, salary
+from ref_table_2 
+where median_flag = 1

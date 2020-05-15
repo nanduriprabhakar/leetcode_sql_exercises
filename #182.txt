@@ -1,0 +1,9 @@
+/* Write your T-SQL query statement below */
+with base_table as (
+select email, count(email) as email_count
+from person
+group by email
+)
+select email
+from base_table
+where email_count > 1

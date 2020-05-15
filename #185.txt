@@ -1,0 +1,14 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select a.name as employee,
+       a.salary,
+       a.departmentid, 
+       b.name as department,
+       dense_rank() over (partition by a.departmentid order by a.salary desc) as ranking
+from employee a 
+join department b on a.departmentid = b.id
+)
+select department, employee, salary
+from base_table
+where ranking in (1,2,3)

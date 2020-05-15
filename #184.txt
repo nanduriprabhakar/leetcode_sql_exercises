@@ -1,0 +1,13 @@
+/* Write your T-SQL query statement below */
+with base_table as (
+select a.Name as employee, 
+       a.departmentid,
+       b.Name as department,
+       a.salary,
+       rank() over (partition by departmentid order by salary DESC) as ranking
+from employee a join department b on a.departmentid = b.id
+)
+select department, employee, salary 
+from base_table 
+where ranking = 1
+order by 2 ASC

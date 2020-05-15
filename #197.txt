@@ -1,0 +1,11 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select a.id as today_id, a.recorddate as today, a.temperature as today_temp,
+       b.id as yesterday_id, b.recorddate as yesterday, b.temperature as yest_temp
+from weather a 
+join weather b on a.recorddate = dateadd(day,1,b.recorddate)
+)
+select today_id as id
+from base_table
+where today_temp > yest_temp
