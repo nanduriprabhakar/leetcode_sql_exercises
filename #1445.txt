@@ -1,0 +1,12 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select sale_date, CASE WHEN fruit = 'apples' THEN sold_num * 1.00
+                       ELSE sold_num * -1.00 END as fruits_sold
+from sales
+
+)
+select sale_date, sum(fruits_sold) as diff
+from base_table
+group by sale_date
+order by sale_date ASC
