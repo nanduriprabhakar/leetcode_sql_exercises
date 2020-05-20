@@ -1,0 +1,12 @@
+/* Write your T-SQL query statement below */
+
+select seat_id 
+from (
+select seat_id, 
+       free as current_seat,
+       lag(free,1) over (order by seat_id) as previous,
+       lead(free,1) over (order by seat_id) as next
+from cinema
+) a
+where current_seat = 1 and (previous = 1 or next = 1)
+order by seat_id asc

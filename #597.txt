@@ -1,0 +1,20 @@
+/* Write your T-SQL query statement below */
+
+with accepted_req as  (
+    select count(*) as accept_count from 
+    (
+        select distinct requester_id, accepter_id
+        from request_accepted
+    ) as a
+), 
+
+total_req as (
+    select count(*) as total_requests from (
+select sender_id, send_to_id
+from friend_request
+group by sender_id, send_to_id
+) as b
+    )
+    
+select round(coalesce(a.accept_count * 1.0 / (case when b.total_requests = 0 then 1 else b.total_requests end) * 1.0, 0), 2) as accept_rate
+from accepted_req as a, total_req as b

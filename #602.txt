@@ -1,0 +1,23 @@
+/* Write your T-SQL query statement below */
+
+with cte_1 as (
+select requester_id, count(requester_id) as accepted_friends
+from request_accepted
+group by requester_id
+),
+cte_2 as (
+select accepter_id, count(accepter_id) as acc
+from request_accepted
+group by accepter_id
+),
+final_table as (
+select *
+from cte_1
+union all
+select *
+from cte_2
+)
+select TOP 1 requester_id as id, SUM(accepted_friends) as num
+from final_table
+group by requester_id
+order by num desc

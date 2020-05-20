@@ -1,0 +1,9 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select a.x as point_1, b.x as point_2, abs(a.x-b.x) as distance
+from point a cross join point b 
+where a.x <> b.x 
+)
+select min(distance) as shortest
+from base_table

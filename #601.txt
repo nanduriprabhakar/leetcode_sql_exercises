@@ -1,0 +1,34 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select a.id, 
+       a.visit_date as today, 
+       a.people as today_people, 
+       b.id as tomorrow_id,
+       b.visit_date as tomorrow,
+       b.people as tomorrow_people,
+       c.id as day_after_id,
+       c.visit_date as day_after,
+       c.people as day_after_people,
+       d.id as yesterday_id,
+       d.visit_date as yesterday,
+       d.people as yesterday_people,
+       e.id as day_before_id,
+       e.visit_date as day_before,
+       e.people as day_before_people
+from stadium a
+left join stadium b on a.id = b.id-1
+left join stadium c on a.id = c.id-2
+left join stadium d on a.id = d.id+1
+left join stadium e on a.id = e.id+2
+
+)
+select id, today as visit_date, today_people as people
+from base_table
+-- where ((today = DATEADD(day,-1, tomorrow) and today = DATEADD(day, -2, day_after))
+--        or (today = DATEADD(day, 1, yesterday) and today = DATEADD(day, -1, tomorrow))
+--        or (today = DATEADD(day, 1, yesterday) and today = DATEADD(day, 2, day_before))
+--        )
+where ((today_people >= 100 and tomorrow_people >= 100 and day_after_people >= 100)
+     or (today_people >= 100 and yesterday_people >= 100 and tomorrow_people >= 100)
+     or (today_people >= 100 and yesterday_people >= 100 and day_before_people >= 100))
