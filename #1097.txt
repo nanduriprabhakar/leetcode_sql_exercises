@@ -1,0 +1,24 @@
+/* Write your T-SQL query statement below */
+
+
+
+-- select a.* , CASE WHEN b.event_date is NULL then 0 
+--                  ELSE 1 END as retention
+-- from activity a
+-- left join activity b on dateadd(day,1,a.event_date) = b.event_date 
+
+with activity_table as (
+select *, rank() over (partition by player_id order by event_date ASC) as ranking
+from activity 
+),
+base_table as (
+select a.*, CASE WHEN b.event_date is NULL then 0
+            ELSE 1 END as retention
+from activity_table a
+left join activity_table b on dateadd(day,1,a.event_date) = b.event_date and a.player_id = b.player_id 
+where a.ranking = 1
+)
+select event_date as install_dt, count(distinct player_id) as installs, ROUND(sum(retention)*1.00/count(distinct player_id),2) as Day1_retention
+from base_table
+group by event_date
+order by event_date asc

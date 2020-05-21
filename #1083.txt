@@ -1,0 +1,12 @@
+/* Write your T-SQL query statement below */
+
+with first_table as (
+select buyer_id
+from sales a
+where product_id = (select product_id from product where product_name = 'iPhone')
+)
+select distinct(buyer_id)
+from sales
+where product_id = (select product_id from product where product_name = 'S8')
+and buyer_id not in (select * from first_table)
+order by buyer_id asc

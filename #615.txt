@@ -1,0 +1,27 @@
+/* Write your T-SQL query statement below */
+
+
+with base_table as (
+select a.*, format(pay_date, 'yyyy-MM') as month_number, b.department_id
+from salary a 
+left join employee b on a.employee_id = b.employee_id
+),
+company_average as (
+select month_number, avg(amount)*1.00 as company_average
+from base_table
+group by month_number
+-- order by month_number
+),
+department_average as (
+select month_number, department_id, avg(amount)*1.00 as dept_average
+from base_table
+group by department_id, month_number
+-- order by month_number, department_id
+)
+select a.month_number as pay_month,
+       a.department_id,
+       CASE WHEN a.dept_average > b.company_average THEN 'higher'
+            WHEN a.dept_average = b.company_average THEN 'same'
+            ELSE 'lower' END as comparison
+from department_average a left join company_average b on a.month_number = b.month_number
+

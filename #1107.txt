@@ -1,0 +1,14 @@
+/* Write your T-SQL query statement below */
+
+
+with base_table as (
+select user_id, min(activity_date) as login
+from traffic 
+where activity = 'login'
+group by user_id
+having min(activity_date) >= dateadd(day,-90,'2019-06-30')
+)
+select login as login_date, count(user_id) as user_count
+from base_table
+group by login
+order by login_date ASC

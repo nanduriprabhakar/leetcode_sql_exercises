@@ -1,0 +1,10 @@
+/* Write your T-SQL query statement below */
+
+with analysis_table as (
+select a.followee, a.follower, b.follower as follower_follower
+from follow a join follow b on a.follower = b.followee
+)
+select follower, count(distinct follower_follower) as num
+from analysis_table
+group by follower
+order by follower asc

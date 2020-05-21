@@ -1,0 +1,10 @@
+/* Write your T-SQL query statement below */
+
+select project_id
+from project
+group by project_id
+having count(distinct employee_id) in (select max(a.employee_count) 
+                                       from (
+                                             select count(distinct employee_id) as employee_count
+                                             from project
+                                             group by project_id) as a)

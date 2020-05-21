@@ -1,0 +1,11 @@
+/* Write your T-SQL query statement below */
+
+with base_table as(
+select actor_id, director_id, count(timestamp) as counts
+from actordirector
+group by actor_id, director_id
+)
+select actor_id, director_id
+from base_table
+where counts >= 3
+order by counts DESC

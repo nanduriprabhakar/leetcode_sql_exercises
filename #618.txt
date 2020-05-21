@@ -1,0 +1,14 @@
+/* Write your T-SQL query statement below */
+
+
+select min(America) as America, min(Asia) as Asia, min(Europe) as Europe 
+FROM
+(select row,
+       CASE when continent='America' then name else NULL end as 'America',
+       CASE when continent='Asia' then name else NULL end as 'Asia',
+       CASE when continent='Europe' then name else NULL end as 'Europe'
+FROM (
+select *, row_number() over (partition by continent order by name ASC) as row
+from student
+) as t) as t1
+group by row

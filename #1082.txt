@@ -1,0 +1,13 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select seller_id, sum(price) as total_price
+from sales
+group by seller_id
+)
+select seller_id
+from base_table
+where total_price = (select max(total_price)
+                    from (select seller_id, sum(price) as total_price
+                         from sales
+                         group by seller_id) as a)

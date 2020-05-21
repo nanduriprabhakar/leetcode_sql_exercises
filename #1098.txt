@@ -1,0 +1,17 @@
+/* Write your T-SQL query statement below */
+
+
+with books_table as (
+select *
+from books
+where available_from < dateadd(month,-1, '2019-06-23') 
+),
+count_of_books as (
+select book_id, sum(quantity) as copies
+from orders 
+where dispatch_date > dateadd(year, -1, '2019-06-23')
+group by book_id
+)
+select a.book_id, a.name
+from books_table a left join count_of_books b on a.book_id = b.book_id
+where b.copies < 10 or b.copies is NULL
