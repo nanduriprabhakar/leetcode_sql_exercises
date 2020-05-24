@@ -1,0 +1,35 @@
+/* Write your T-SQL query statement below */
+
+--P.S. The query is passing the given test case in the question. Unable to understand the disconnect between the ask and the other test cases provided
+
+
+with platform_naming_table as (
+select 'desktop' as platform_1, 'desktop' as platform_2
+union
+select 'mobile' as platform_1, 'mobile' as platform_2
+union
+select 'both' as platform_1, 'desktop,mobile' as platform_2
+),
+calendar_dates as (
+select distinct(spend_date) as dates
+from spending
+),
+cross_join_table as (
+select a.dates as spend_date, b.*
+from calendar_dates a cross join platform_naming_table b
+),
+base_table as (
+select spend_date, user_id, string_agg(platform, ',') within group (order by platform) as occurence, sum(amount) as total_amount
+from spending
+group by spend_date, user_id
+),
+base_table_2 as (
+select spend_date, occurence, sum(total_amount) as total_amount, count(user_id) as total_users
+from base_table
+group by spend_date, occurence, total_amount
+)
+select a.spend_date, 
+       a.platform_1 as platform, 
+       COALESCE(b.total_amount,0) as total_amount,
+       COALESCE(b.total_users,0) as total_users
+from cross_join_table a left join base_table_2 b on a.spend_date = b.spend_date and a.platform_2 = b.occurence
