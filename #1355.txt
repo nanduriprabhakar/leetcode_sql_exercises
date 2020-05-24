@@ -1,0 +1,11 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select activity, count(distinct id) as num_of_friends
+from friends
+group by activity
+-- order by 2 desc
+)
+select activity 
+from base_table
+where num_of_friends <> (select max(num_of_friends) from base_table) and num_of_friends <> (select min(num_of_friends) from base_table)

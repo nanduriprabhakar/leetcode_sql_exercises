@@ -1,0 +1,27 @@
+/* Write your T-SQL query statement below */
+
+select title as results
+from (
+select *, row_number() over (order by avg_movie_rating DESC, title ASC) as rnking
+from
+    (
+    select a.movie_id, b.title, avg(a.rating*1.00) as avg_movie_rating
+    from movie_rating a join movies b on a.movie_id = b.movie_id
+    where datepart(month, created_at) = 2 and datepart(year, created_at) = 2020
+    group by a.movie_id, b.title
+    ) as a
+) as b
+where b.rnking  = 1
+UNION
+select name as results
+from
+(
+select *, row_number() over (order by movies_rated DESC, name ASC) as rnking
+from
+        (
+        select a.user_id,b.name, count(a.rating) as movies_rated
+        from movie_rating a join users b on a.user_id = b.user_id
+        group by a.user_id, b.name
+        ) as c
+) as d
+where d.rnking = 1 

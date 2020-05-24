@@ -1,0 +1,20 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select *, format(trans_date, 'yyyy-MM') as month
+from transactions
+),
+all_trans as (
+select month, country, count(id) as trans_count, sum(amount) as trans_total_amount
+from base_table 
+group by month, country
+),
+all_approved_trans as (
+select month, country, count(id) as approved_count, sum(amount) as approved_total_amount
+from base_table
+where state = 'approved'
+group by month, country
+)
+select a.month, a.country, a.trans_count, COALESCE(b.approved_count,0) as approved_count, a.trans_total_amount, COALESCE(b.approved_total_amount,0) as approved_total_amount
+from all_trans a left join all_approved_trans b on a.month = b.month and a.country = b.country
+order by a.month, a.country

@@ -1,0 +1,15 @@
+/* Write your T-SQL query statement below */
+
+select business_id
+from (
+select a.business_id, a.event_type, avg(a.occurences) as avg_occ, b.overall_avg_occ, 
+        CASE WHEN avg(a.occurences) > b.overall_avg_occ THEN 1
+             ELSE 0 end as valid_flag
+from events a join (
+    select event_type, avg(occurences) as overall_avg_occ
+    from events group by event_type
+) as b on a.event_type = b.event_type
+group by a.business_id, a.event_type, b.overall_avg_occ
+) as base_table
+group by business_id
+having sum(base_table.valid_flag) > 1

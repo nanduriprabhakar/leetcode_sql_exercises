@@ -1,0 +1,19 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select visited_on, sum(amount) as amount_for_day
+from customer
+group by visited_on
+),
+secondary_table as  (
+select visited_on, LAG(visited_on,6) over (order by visited_on ASC) as week_day_before, amount_for_day
+from base_table
+-- order by visited_on
+),
+analysis_table as (
+select visited_on, week_day_before, sum(amount_for_day) over (order by visited_on rows between 6 preceding and current row) as test_amount
+from secondary_table
+)
+select visited_on, test_amount as amount, ROUND(test_amount*1.00/7,2) as average_amount
+from analysis_table
+where week_day_before is not null

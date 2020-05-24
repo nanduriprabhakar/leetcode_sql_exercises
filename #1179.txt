@@ -1,0 +1,66 @@
+/* Write your T-SQL query statement below */
+
+select a.id, 
+       b.revenue as Jan_Revenue,
+       c.revenue as Feb_Revenue,
+       d.revenue as Mar_Revenue,
+       e.revenue as Apr_Revenue,
+       f.revenue as May_Revenue,
+       g.revenue as Jun_Revenue,
+       h.revenue as Jul_Revenue,
+       i.revenue as Aug_Revenue,
+       j.revenue as Sep_Revenue,
+       k.revenue as Oct_Revenue,
+       l.revenue as Nov_Revenue,
+       m.revenue as Dec_Revenue
+from 
+(select distinct(id) as id
+from department) as a 
+left join
+(select *
+from department
+where month = 'Jan') as b on a.id = b.id
+left join
+(select *
+from department
+where month = 'Feb') as c on a.id = c.id
+left join
+(select *
+from department
+where month = 'Mar') as d on a.id = d.id
+left join
+(select *
+from department
+where month = 'Apr') as e on a.id = e.id
+left join
+(select *
+from department
+where month = 'May') as f on a.id = f.id
+left join
+(select *
+from department
+where month = 'Jun') as g on a.id = g.id
+left join
+(select *
+from department
+where month = 'Jul') as h on a.id = h.id
+left join
+(select *
+from department
+where month = 'Aug') as i on a.id = i.id
+left join
+(select *
+from department
+where month = 'Sep') as j on a.id = j.id
+left join
+(select *
+from department
+where month = 'Oct') as k on a.id = k.id
+left join
+(select *
+from department
+where month = 'Nov') as l on a.id = l.id
+left join
+(select *
+from department
+where month = 'Dec') as m on a.id = m.id

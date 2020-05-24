@@ -1,0 +1,10 @@
+/* Write your T-SQL query statement below */
+
+select COALESCE(round(avg(no_of_sessions*1.00),2),0.00) as average_sessions_per_user
+-- select *
+from(
+select user_id, count(distinct session_id) as no_of_sessions
+from activity
+where activity_date > dateadd(day, -30, '2019-07-27') and activity_date <= '2019-07-27'
+group by user_id
+) as a

@@ -1,0 +1,12 @@
+/* Write your T-SQL query statement below */
+
+
+select extra as report_reason, count(extra) as report_count
+from
+(
+    select distinct post_id as post_id, action_date as action_date, action as action, extra as extra
+    from actions
+    group by post_id, action_date, action, extra
+) a
+where action_date = dateadd(day,-1,'2019-07-05') and action = 'report'
+group by extra

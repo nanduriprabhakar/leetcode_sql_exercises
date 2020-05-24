@@ -1,0 +1,10 @@
+/* Write your T-SQL query statement below */
+
+with orders_info as (
+select buyer_id, count(order_id) as orders_in_2019
+from orders
+where datepart(year, order_date) = 2019
+group by buyer_id
+)
+select a.user_id as buyer_id, a.join_date, COALESCE(b.orders_in_2019,0) as orders_in_2019
+from users a left join orders_info b on a.user_id = b.buyer_id

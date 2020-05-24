@@ -1,0 +1,26 @@
+/* Write your T-SQL query statement below */
+with base_table as (
+select a.user_id,
+       b.customer_id,
+       b.customer_name as customer_name, 
+       b.email as customer_email,
+       a.contact_name as customer_friend_name,
+       a.contact_email as customer_friend_email,
+       CASE WHEN c.customer_name is not null THEN 1
+            ELSE 0 END as trusted_or_not
+from contacts a 
+full outer join customers b on a.user_id = b.customer_id
+left join customers c on a.contact_name = c.customer_name and a.contact_email = c.email
+),
+base_analysis_table as (
+select 
+       customer_id,
+       customer_name,
+       COUNT(DISTINCT customer_friend_name) as contacts_cnt,
+       SUM(trusted_or_not) as trusted_contacts_cnt
+from base_table
+group by customer_id, customer_name
+)
+select a.invoice_id, b.customer_name, a.price, b.contacts_cnt, b.trusted_contacts_cnt
+from invoices a join base_analysis_table b on a.user_id = b.customer_id
+order by a.invoice_id ASC

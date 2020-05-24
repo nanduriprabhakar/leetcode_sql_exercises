@@ -1,0 +1,21 @@
+/* Write your T-SQL query statement below */
+
+
+with initial_analysis as (
+select *, rank() over (partition by seller_id order by order_date ASC) as order_rank
+from orders
+),
+second_item_order as (
+select item_id, seller_id
+from initial_analysis 
+where order_rank = 2
+),
+analysis_table as (
+select a.user_id, a.favorite_brand, b.item_id, c.item_brand
+from users a left join second_item_order b on a.user_id = b.seller_id
+left join items c on b.item_id = c.item_id
+)
+select user_id as seller_id, CASE WHEN favorite_brand = item_brand THEN 'yes'
+                ELSE 'no' END as '2nd_item_fav_brand'
+from analysis_table
+order by user_id ASC

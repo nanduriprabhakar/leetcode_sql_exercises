@@ -1,0 +1,12 @@
+/* Write your T-SQL query statement below */
+
+
+
+select b.country_name, 
+       CASE WHEN avg(a.weather_state*1.00) <= 15 THEN 'Cold'
+            WHEN avg(a.weather_state*1.00) >= 25 THEN 'Hot'
+            ELSE 'Warm' end as weather_type
+from weather a
+join countries b on a.country_id = b.country_id
+where day >= '2019-11-01' and day <= '2019-11-30'
+group by a.country_id, b.country_name 

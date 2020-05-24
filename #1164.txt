@@ -1,0 +1,10 @@
+/* Write your T-SQL query statement below */
+
+with latest_price_table as (
+select *, rank() over (partition by product_id order by change_date DESC) as price_rank
+from products
+where change_date <= '2019-08-16'
+)
+select a.product_id, COALESCE(b.new_price,10) as price 
+from (select distinct(product_id)
+     from products) as a left join latest_price_table b on a.product_id = b.product_id and b.price_rank = 1

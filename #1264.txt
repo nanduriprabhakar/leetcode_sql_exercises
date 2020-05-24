@@ -1,0 +1,15 @@
+/* Write your T-SQL query statement below */
+
+with user_1_friends as (
+select distinct(user2_id) as friends_of_1
+from friendship
+where user1_id = 1
+union 
+select distinct(user1_id)
+from friendship
+where user2_id = 1
+)
+
+select distinct(a.page_id) as recommended_page
+from likes as a
+where a.user_id in (select * from user_1_friends) and page_id not in (select page_id from likes where user_id = 1)

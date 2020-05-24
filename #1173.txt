@@ -1,0 +1,9 @@
+/* Write your T-SQL query statement below */
+
+select round(((a.immediate_orders * 1.00)/b.total_orders),4) * 100 as immediate_percentage
+from
+    (select count(distinct delivery_id) as immediate_orders
+    from delivery 
+    where order_date = customer_pref_delivery_date) as a,
+    (select count(distinct delivery_id) as total_orders
+    from delivery) as b

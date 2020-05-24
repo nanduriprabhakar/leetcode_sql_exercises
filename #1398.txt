@@ -1,0 +1,22 @@
+/* Write your T-SQL query statement below */
+
+with customer_a as (
+select customer_id
+from orders
+where product_name = 'A'
+),
+customer_b as (
+select customer_id
+from orders
+where product_name = 'B'
+),
+customer_c as (
+select customer_id
+from orders
+where product_name = 'C'
+)
+select distinct(a.customer_id), b.customer_name
+from orders a join customers b on a.customer_id = b.customer_id
+where a.customer_id in (select * from customer_a) and a.customer_id in (select * from customer_b)
+and a.customer_id not in (select * from customer_c)
+order by a.customer_id ASC

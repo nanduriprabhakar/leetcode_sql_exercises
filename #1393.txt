@@ -1,0 +1,6 @@
+/* Write your T-SQL query statement below */
+
+select stock_name, SUM(CASE WHEN operation='Buy' THEN price*-1.00 ELSE price*1.00 END) as capital_gain_loss
+from stocks
+group by stock_name
+order by stock_name ASC

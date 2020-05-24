@@ -1,0 +1,10 @@
+/* Write your T-SQL query statement below */
+
+select gender, day, sum(score_points) over (partition by gender order by day ASC) as total
+from scores
+order by gender, day
+-- group by gender, day
+
+-- select day, score_points, sum(score_points) over (order by day ASC)
+-- from scores
+-- where gender = 'F'

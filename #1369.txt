@@ -1,0 +1,22 @@
+/* Write your T-SQL query statement below */
+
+with activity_count_table as (
+select a.*, b.activity_count
+from useractivity a join 
+(
+select username, count(username) as activity_count
+from useractivity
+group by username
+) as b on a.username = b.username
+),
+ranking_table as (
+select *, row_number() over(partition by username order by startDate DESC) as rnking
+from useractivity
+)
+select username, activity, startDate, endDate
+from ranking_table
+where rnking = 2
+UNION
+select username, activity, startDate, endDate
+from activity_count_table
+where activity_count = 1

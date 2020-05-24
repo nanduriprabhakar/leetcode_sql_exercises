@@ -1,0 +1,11 @@
+/* Write your T-SQL query statement below */
+
+select a.*,
+CASE WHEN a.operator = '>' and b.value > c.value THEN 'true'
+     WHEN a.operator = '=' and b.value = c.value THEN 'true'
+     WHEN a.operator = '<' and b.value < c.value THEN 'true'
+     ELSE 'false'
+     END as value
+from expressions a 
+join variables b on a.left_operand = b.name 
+join variables c on a.right_operand = c.name

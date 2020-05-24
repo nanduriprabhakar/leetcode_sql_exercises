@@ -1,0 +1,21 @@
+/* Write your T-SQL query statement below */
+
+with exam_scores as (
+select exam_id, max(score) as max_score, min(score) as min_score
+from exam 
+group by exam_id
+),
+base_analysis_table as (
+select a.*, b.max_score, b.min_score, CASE WHEN a.score=b.max_score THEN 1
+                                           WHEN a.score=b.min_score THEN 1
+                                           ELSE 0 END as identification_flag
+from exam a join exam_scores b on a.exam_id = b.exam_id
+),
+secondary_analysis_table as (
+select student_id, identification_flag, rank() over (partition by student_id order by identification_flag DESC) as ranking
+from base_analysis_table
+group by student_id, identification_flag
+)
+select a.student_id, b.student_name
+from secondary_analysis_table  a join student b on a.student_id = b.student_id
+where ranking = 1 and identification_flag = 0

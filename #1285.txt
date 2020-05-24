@@ -1,0 +1,21 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select  LAG(log_id,1) over (order by log_id ASC) as previous,
+        log_id as current_id,
+        LEAD(log_id,1) over (order by log_id ASC) as next
+from logs
+-- order by log_id
+),
+start_id_table as (
+select current_id, row_number() over (order by current_id ASC) as join_condition
+from base_table
+where (current_id - previous <> 1) or previous is NULL
+),
+end_id_table as (
+select current_id, row_number() over (order by current_id ASC) as join_condition
+from base_table
+where (next - current_id <> 1) or next is NULL
+)
+select a.current_id as start_id, b.current_id as end_id
+from start_id_table a inner join end_id_table b on a.join_condition = b.join_condition

@@ -1,0 +1,4 @@
+/* Write your T-SQL query statement below */
+
+select a.id, a.year, COALESCE(b.npv,0) as npv
+from queries a left join npv b on a.id = b.id and a.year = b.year

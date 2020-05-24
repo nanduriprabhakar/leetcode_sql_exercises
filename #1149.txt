@@ -1,0 +1,11 @@
+/* Write your T-SQL query statement below */
+
+
+select distinct(viewer_id) as id
+from (
+select view_date, viewer_id, count(distinct article_id) as article_count
+from views 
+group by view_date, viewer_id
+) as a
+where article_count >= 2
+order by viewer_id

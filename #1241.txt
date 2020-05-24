@@ -1,0 +1,11 @@
+/* Write your T-SQL query statement below */
+
+with post_ids as(
+select distinct(sub_id) as parent_id
+from submissions
+where parent_id is null
+)
+select b.parent_id as post_id, COALESCE(count(distinct sub_id),0) as number_of_comments
+from submissions a right join post_ids b on a.parent_id = b.parent_id
+-- where parent_id in (select * from post_ids)
+group by b.parent_id

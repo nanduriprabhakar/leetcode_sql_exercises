@@ -1,0 +1,13 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select *, rank() over (partition by customer_id order by order_date ASC) as first_order_rank
+from delivery
+)
+select ROUND((b.immediate_orders * 1.00 / a.total_orders)*100,2) as immediate_percentage
+from 
+     (select count(distinct customer_id) as total_orders
+      from base_table 
+      where first_order_rank = 1) as a,
+     (select count(distinct customer_id) as immediate_orders
+     from base_table b where first_order_rank = 1 and order_date = customer_pref_delivery_date) as b

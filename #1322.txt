@@ -1,0 +1,6 @@
+# Write your MySQL query statement below
+select distinct ad_id, COALESCE(ROUND((SUM(IF(action='Clicked',1,0))*1.00/ 
+                       SUM(IF(action in ('Clicked', 'Viewed'),1,0)))*100,2),0) as ctr
+from ads
+group by ad_id
+order by ctr DESC, ad_id ASC

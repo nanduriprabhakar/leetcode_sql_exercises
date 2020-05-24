@@ -1,0 +1,10 @@
+/* Write your T-SQL query statement below */
+
+select b.product_name, a.total_units as unit 
+from (
+select product_id, sum(unit) as total_units
+from orders
+where format(order_date, 'yyyy-MM') = '2020-02'
+group by product_id) as a join products b on a.product_id = b.product_id
+where a.total_units >= 100
+order by a.total_units DESC
