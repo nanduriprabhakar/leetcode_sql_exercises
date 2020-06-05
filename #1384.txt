@@ -1,0 +1,23 @@
+/* Write your T-SQL query statement below */
+
+with period_table as (
+select '2018' as report_year, '2018-01-01' as start_date, '2018-12-31' as end_date
+union
+select '2019' as report_year, '2019-01-01' as start_date, '2019-12-31' as end_date
+union
+select '2020' as report_year, '2020-01-01' as start_date, '2020-12-31' as end_date    
+)
+select *
+from 
+(
+select s.product_id, p.product_name, pt.report_year,
+       (CASE WHEN s.period_start between pt.start_date and pt.end_date and s.period_end <= pt.end_date THEN (datediff(day,s.period_start,s.period_end) + 1) * average_daily_sales
+            WHEN s.period_start between pt.start_date and pt.end_date and s.period_end >= pt.end_date THEN (datediff(day,s.period_start,pt.end_date) + 1) * average_daily_sales
+            WHEN s.period_start < pt.start_date and s.period_end between pt.start_date and pt.end_date THEN (datediff(day,pt.start_date,s.period_end) + 1) * average_daily_sales
+            WHEN s.period_start < pt.start_date and s.period_end > pt.end_date THEN (datediff(day,pt.start_date,pt.end_date) + 1) * average_daily_sales
+            ELSE 0 END) as  total_amount
+from sales s join product p on s.product_id = p.product_id
+right join period_table pt on 1=1
+) as final_table
+where total_amount > 0
+order by 1 ASC, 3 ASC

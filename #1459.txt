@@ -1,0 +1,15 @@
+/* Write your T-SQL query statement below */
+
+with cross_join_table as (
+    select a.id as p1,
+           a.x_value as p1_x_value,
+           a.y_value as p1_y_value,
+           b.id as p2,
+           b.x_value as p2_x_value,
+           b.y_value as p2_y_value
+    from points as a cross join points as b where a.id < b.id   -- the less than clause takes care of the duplicates
+)
+select p1, p2, abs(p1_x_value - p2_x_value) * abs(p1_y_value - p2_y_value) as area
+from cross_join_table
+where abs(p1_x_value - p2_x_value) * abs(p1_y_value - p2_y_value) > 0
+order by 3 DESC, p1 ASC, p2 ASC
