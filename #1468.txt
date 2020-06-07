@@ -1,0 +1,17 @@
+/* Write your T-SQL query statement below */
+
+with base_table as (
+select company_id, max(salary) as max_salary
+from salaries
+group by company_id
+),
+tax_rate_table as (
+select a.*, case when a.max_salary < 1000 then 0
+                 when a.max_salary >= 1000 and a.max_salary <= 10000 then 24
+                 when a.max_salary > 10000 then 49
+            else 0 end as tax_rate
+from base_table as a
+)
+select b.company_id, b.employee_id, b.employee_name, round(b.salary - (b.salary * a.tax_rate*1.00/100),0) as salary
+from salaries b join tax_rate_table a on b.company_id = a.company_id
+order by b.company_id, b.employee_id
